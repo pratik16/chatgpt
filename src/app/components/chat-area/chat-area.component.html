@@ -1,0 +1,31 @@
+<div class="chat-area-container">
+  <div class="chat-header" *ngIf="(messages$ | async) && (messages$ | async)!.length > 0">
+    <div class="header-content">
+      <h2 class="chat-title">ChatGPT by Pratik Vanol</h2>
+      <button class="header-logout-btn" (click)="logout()" title="Logout">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="16,17 21,12 16,7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Logout
+      </button>
+    </div>
+  </div>
+  
+  <div class="welcome-section" *ngIf="(messages$ | async)?.length === 0">
+    <div class="welcome-content">
+      <h1 class="welcome-title">ChatGPT by Pratik Vanol &nbsp;(<span class="model-badge">GPT-4</span>)</h1>
+    </div>
+  </div>
+  
+  <div class="messages-container">
+    <div *ngIf="loading$ | async" class="loading">Loading...</div>
+    <app-chat-message 
+      *ngFor="let message of messages$ | async"
+      [isUser]="message.role === 'user'" 
+      [message]="message.content"
+      [timestamp]="'Now'">
+    </app-chat-message>
+  </div>
+</div>

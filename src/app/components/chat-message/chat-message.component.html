@@ -1,0 +1,22 @@
+<div class="message-container" [class.user-message]="isUser" [class.assistant-message]="!isUser">
+  <div class="message-content">
+    <div class="avatar">
+      <div class="avatar-icon" [class.user-avatar]="isUser" [class.assistant-avatar]="!isUser">
+        <svg *ngIf="isUser" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <svg *ngIf="!isUser" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="currentColor"/>
+        </svg>
+      </div>
+    </div>
+    <div class="message-text">
+      <div class="message-header">
+        <span class="sender-name">{{ isUser ? 'You' : 'ChatGPT' }}</span>
+        <span class="timestamp">{{ timestamp }}</span>
+      </div>
+      <div class="message-body" [innerHTML]="formatMessage(message)"></div>
+    </div>
+  </div>
+</div>
