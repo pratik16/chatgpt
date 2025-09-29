@@ -5,17 +5,16 @@ import { map, switchMap, catchError, tap } from 'rxjs/operators';
 import { ChatService } from '../services/chat.service';
 import * as ChatActions from './chat.actions';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ChatEffects {
 
+  private actions$ = inject(Actions);
+  private chatService = inject(ChatService);
+
   constructor(
-    private actions$: Actions,
-    private chatService: ChatService
+    
   ) {
     console.log('ChatEffects constructor called');
-    console.log('ChatEffects actions$:', this.actions$);
 
   }
 
