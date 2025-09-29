@@ -15,20 +15,12 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   canActivate(): Observable<boolean> {
-    if (!this.authService.isAuthenticated() || this.authService.isTokenExpired()) {
-      this.authService.logout();
+    if (!this.authService.isAuthenticated()) {
       this.router.navigate(['/login']);
       return of(false);
     }
 
-    // Validate user with server
-    return this.authService.validateUser().pipe(
-      map(() => true),
-      catchError(() => {
-        this.authService.logout();
-        this.router.navigate(['/login']);
-        return of(false);
-      })
-    );
+    // Trust presence of token for route access; interceptor will handle 401s
+    return of(true);
   }
 } 

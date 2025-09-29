@@ -10,5 +10,5 @@ export const routes: Routes = [
     component: ChatComponent,
     canActivate: [AuthGuard]
   },
-  { path: '', redirectTo: '/login', pathMatch: 'full' }
+  { path: '', redirectTo: '/chat', pathMatch: 'full' }
 ];

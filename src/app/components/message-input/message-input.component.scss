@@ -1,26 +1,27 @@
 .message-input-container {
-  padding: 20px;
-  background-color: #343541;
-  border-top: 1px solid #4a4b53;
+  padding: 8px 6px;
+  background-color: #e5ddd5; /* WhatsApp chat bg */
+  border-top: 1px solid #d1c4b8;
 }
 
 .input-wrapper {
-  max-width: 768px;
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
 }
 
 .input-area {
   position: relative;
   display: flex;
-  align-items: flex-end;
-  background-color: #40414f;
-  border: 1px solid #565869;
-  border-radius: 12px;
-  padding: 12px;
-  transition: border-color 0.2s;
+  align-items: center;
+  background-color: #ffffff;
+  border: 1px solid #d1d7db;
+  border-radius: 24px;
+  padding: 8px 10px 8px 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
 
   &:focus-within {
-    border-color: #10a37f;
+    border-color: #00a884;
+    box-shadow: 0 0 0 2px rgba(0,168,132,0.15);
   }
 }
 
@@ -29,8 +30,8 @@
   background: transparent;
   border: none;
   outline: none;
-  color: #ececf1;
-  font-size: 16px;
+  color: #111b21;
+  font-size: 15px;
   line-height: 1.5;
   resize: none;
   min-height: 24px;
@@ -38,7 +39,7 @@
   font-family: inherit;
 
   &::placeholder {
-    color: #8e8ea0;
+    color: #667781;
   }
 }
 
@@ -46,25 +47,29 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  background-color: #10a37f;
+  width: 36px;
+  height: 36px;
+  background-color: #00a884;
   border: none;
-  border-radius: 6px;
+  border-radius: 50%;
   color: white;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, transform 0.1s;
   margin-left: 8px;
   flex-shrink: 0;
 
   &:hover:not(:disabled) {
-    background-color: #0d8a6f;
+    background-color: #029e7a;
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
   }
 
   &:disabled {
-    background-color: #565869;
+    background-color: #d1d7db;
+    color: #aebac1;
     cursor: not-allowed;
-    opacity: 0.5;
   }
 
   svg {
@@ -74,12 +79,12 @@
 }
 
 .input-footer {
-  margin-top: 12px;
+  margin-top: 8px;
   text-align: center;
 }
 
 .disclaimer {
-  color: #8e8ea0;
+  color: #667781;
   font-size: 12px;
   line-height: 1.4;
 }

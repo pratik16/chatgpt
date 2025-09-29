@@ -27,7 +27,7 @@ export function AuthInterceptor(
   // Handle the request and catch any errors
   return next(request).pipe(
     catchError((error: HttpErrorResponse) => {
-      // If we get a 401 Unauthorized error, logout the user
+      // If we get a 401 Unauthorized error, clear local auth and redirect
       if (error.status === 401) {
         authService.logout();
         router.navigate(['/login']);

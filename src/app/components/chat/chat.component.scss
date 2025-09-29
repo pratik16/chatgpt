@@ -1,13 +1,13 @@
 .app-container {
   display: flex;
   height: 100vh;
-  background-color: #343541;
+  background-color: #0b141a; /* WhatsApp outer bg */
 }
 
 .sidebar {
-  width: 260px;
-  background-color: #202123;
-  border-right: 1px solid #4d4d4f;
+  width: 300px;
+  background-color: #111b21;
+  border-right: 1px solid #233138;
 }
 
 .main-content {
@@ -22,5 +22,5 @@
 }
 
 .message-input {
-  border-top: 1px solid #4d4d4f;
-} 
+  border-top: 1px solid #d1c4b8;
+}

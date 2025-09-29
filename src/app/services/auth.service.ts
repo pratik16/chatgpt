@@ -40,6 +40,9 @@ export class AuthService {
       .pipe(
         tap(response => {
           localStorage.setItem('access_token', response.access_token);
+          try {
+            localStorage.setItem('user', JSON.stringify(response.user));
+          } catch {}
           this.currentUserSubject.next(response.user);
         })
       );
@@ -61,6 +64,7 @@ export class AuthService {
 
   private clearAuthData(): void {
     localStorage.removeItem('access_token');
+    localStorage.removeItem('user');
     this.currentUserSubject.next(null);
     this.router.navigate(['/login']);
   }
@@ -71,15 +75,7 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     const token = this.getToken();
-    if (!token) return false;
-    
-    // Check if token is expired
-    if (this.isTokenExpired()) {
-      this.clearAuthData();
-      return false;
-    }
-    
-    return true;
+    return !!token;
   }
 
   getCurrentUser(): User | null {
@@ -97,38 +93,41 @@ export class AuthService {
 
   private loadUserFromStorage(): void {
     const token = this.getToken();
-    if (token) {
-      // Check if token is expired first
-      if (this.isTokenExpired()) {
-        this.clearAuthData();
-        return;
+    if (!token) return;
+
+    // Hydrate user from localStorage if available (best effort)
+    try {
+      const raw = localStorage.getItem('user');
+      if (raw) {
+        const user: User = JSON.parse(raw);
+        this.currentUserSubject.next(user);
       }
-      
-      // Validate user with server to get real user data
-      this.validateUser().subscribe({
-        next: (user) => {
-          // User is valid, data is already set in validateUser
-        },
-        error: (error) => {
-          console.warn('Failed to validate user token:', error);
-          this.clearAuthData();
-        }
-      });
-    }
+    } catch {}
+
+    // Optionally validate in background; do not force logout on startup errors
+    this.validateUser().subscribe({
+      next: (user) => {
+        // already set via tap; ensure cache is updated
+        try { localStorage.setItem('user', JSON.stringify(user)); } catch {}
+      },
+      error: (error) => {
+        console.warn('Startup token validation failed; deferring logout until next request:', error);
+        // Do not clear token here; interceptor will handle on first 401
+      }
+    });
   }
 
-  // Method to check if token is expired
+  // Optional: keep method for compatibility if referenced elsewhere
   isTokenExpired(): boolean {
     const token = this.getToken();
     if (!token) return true;
-    
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       const currentTime = Date.now() / 1000;
-      // Add a small buffer (5 minutes) to prevent edge cases
-      return payload.exp < (currentTime + 300);
+      return payload.exp < currentTime;
     } catch {
-      return true;
+      // If token cannot be decoded as JWT, treat as non-expired here; backend will validate
+      return false;
     }
   }
 } 
