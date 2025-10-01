@@ -20,6 +20,10 @@ export interface LoginResponse {
   user: User;
 }
 
+export interface AuthConfigResponse {
+  googleClientId: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -33,6 +37,10 @@ export class AuthService {
     private router: Router
   ) {
     this.loadUserFromStorage();
+  }
+
+  fetchAuthConfig(): Observable<AuthConfigResponse> {
+    return this.http.get<AuthConfigResponse>(`${this.apiUrl}/auth/config`);
   }
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
@@ -129,5 +137,18 @@ export class AuthService {
       // If token cannot be decoded as JWT, treat as non-expired here; backend will validate
       return false;
     }
+  }
+
+  loginWithGoogleIdToken(idToken: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/google`, { id_token: idToken })
+      .pipe(
+        tap(response => {
+          localStorage.setItem('access_token', response.access_token);
+          try {
+            localStorage.setItem('user', JSON.stringify(response.user));
+          } catch {}
+          this.currentUserSubject.next(response.user);
+        })
+      );
   }
 } 

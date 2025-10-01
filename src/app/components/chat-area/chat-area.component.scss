@@ -76,24 +76,13 @@
   margin-bottom: 24px;
 }
 
-.model-badge {
-  background-color: #10a37f;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.model-description {
-  color: #8e8ea0;
-  font-size: 14px;
-}
-
 .messages-container {
   flex: 9;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 6px 4px; /* Slight padding similar to WhatsApp */
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .loading {

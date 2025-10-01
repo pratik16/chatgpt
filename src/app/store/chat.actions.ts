@@ -57,7 +57,7 @@ export const addMessage = createAction(
 // Send Message with AI Response
 export const sendMessageWithAI = createAction(
   '[Chat] Send Message with AI',
-  props<{ chatId: string; message: string }>()
+  props<{ chatId: string; message: string; model?: string }>()
 );
 
 export const sendMessageWithAISuccess = createAction(
@@ -69,8 +69,45 @@ export const sendMessageWithAIFailure = createAction(
   props<{ error: string }>()
 );
 
+// Streaming
+export const sendMessageWithAIStream = createAction(
+  '[Chat] Send Message with AI (Stream)',
+  props<{ chatId: string; message: string; model?: string }>()
+);
+
+export const receiveAIStreamToken = createAction(
+  '[Chat] Receive AI Stream Token',
+  props<{ chatId: string; token: string }>()
+);
+
+export const completeAIStream = createAction(
+  '[Chat] Complete AI Stream',
+  props<{ chatId: string }>()
+);
+
+export const failAIStream = createAction(
+  '[Chat] Fail AI Stream',
+  props<{ error: string }>()
+);
+
 // Set Loading State
 export const setLoading = createAction(
   '[Chat] Set Loading',
   props<{ loading: boolean }>()
 ); 
+
+// Delete Chat
+export const deleteChat = createAction(
+  '[Chat] Delete Chat',
+  props<{ chatId: string }>()
+);
+
+export const deleteChatSuccess = createAction(
+  '[Chat] Delete Chat Success',
+  props<{ chatId: string }>()
+);
+
+export const deleteChatFailure = createAction(
+  '[Chat] Delete Chat Failure',
+  props<{ error: string }>()
+);

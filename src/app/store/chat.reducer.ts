@@ -126,9 +126,96 @@ export const chatReducer = createReducer(
     loading: false
   })),
 
+  // Streaming: start
+  on(ChatActions.sendMessageWithAIStream, (state, { chatId, message }) => {
+    const userMsg: Message = { role: 'user', content: message };
+    const assistantPlaceholder: Message = { role: 'assistant', content: '' };
+
+    const updatedChats: Chat[] = state.chats.map((chat: Chat) => 
+      chat.id === chatId 
+        ? { ...chat, messages: [...chat.messages, userMsg, assistantPlaceholder] }
+        : chat
+    );
+
+    const updatedCurrentChat: Chat | null = state.currentChat?.id === chatId
+      ? { ...state.currentChat, messages: [...state.currentChat.messages, userMsg, assistantPlaceholder] }
+      : state.currentChat;
+
+    return {
+      ...state,
+      chats: updatedChats,
+      currentChat: updatedCurrentChat,
+      loading: true,
+      error: null
+    } as ChatState;
+  }),
+
+  // Streaming: token chunks
+  on(ChatActions.receiveAIStreamToken, (state, { chatId, token }) => {
+    const appendToken = (messages: Message[]) => {
+      if (messages.length === 0) return messages;
+      const lastIndex = messages.length - 1;
+      const last = messages[lastIndex];
+      if (last.role !== 'assistant') return messages;
+      const updatedLast: Message = { ...last, content: (last.content || '') + token };
+      return [...messages.slice(0, lastIndex), updatedLast];
+    };
+
+    const updatedChats = state.chats.map(chat => 
+      chat.id === chatId 
+        ? { ...chat, messages: appendToken(chat.messages) }
+        : chat
+    );
+
+    const updatedCurrentChat = state.currentChat?.id === chatId
+      ? { ...state.currentChat, messages: appendToken(state.currentChat.messages) }
+      : state.currentChat;
+
+    return {
+      ...state,
+      chats: updatedChats,
+      currentChat: updatedCurrentChat
+    };
+  }),
+
+  // Streaming: complete
+  on(ChatActions.completeAIStream, (state) => ({
+    ...state,
+    loading: false
+  })),
+
+  // Streaming: fail
+  on(ChatActions.failAIStream, (state, { error }) => ({
+    ...state,
+    error,
+    loading: false
+  })),
+
   // Set Loading
   on(ChatActions.setLoading, (state, { loading }) => ({
     ...state,
     loading
+  })),
+
+  // Delete Chat
+  on(ChatActions.deleteChat, (state) => ({
+    ...state,
+    loading: true,
+    error: null
+  })),
+  on(ChatActions.deleteChatSuccess, (state, { chatId }) => {
+    const filtered = state.chats.filter(c => c.id !== chatId);
+    const isCurrentDeleted = state.currentChat?.id === chatId;
+    return {
+      ...state,
+      chats: filtered,
+      currentChat: isCurrentDeleted ? (filtered[0] ?? null) : state.currentChat,
+      loading: false
+    } as ChatState;
+  }),
+  on(ChatActions.deleteChatFailure, (state, { error }) => ({
+    ...state,
+    error,
+    loading: false
   }))
 ); 

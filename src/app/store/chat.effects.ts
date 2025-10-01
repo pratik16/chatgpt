@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { map, switchMap, catchError, tap } from 'rxjs/operators';
+import { map, switchMap, catchError, tap, endWith, debounceTime } from 'rxjs/operators';
 import { ChatService } from '../services/chat.service';
 import * as ChatActions from './chat.actions';
 
@@ -41,6 +41,7 @@ export class ChatEffects {
     return this.actions$.pipe(
       ofType(ChatActions.loadChat),
       tap(({ chatId }) => console.log('Effect: loadChat triggered for', chatId)),
+      //debounceTime(100),
       switchMap(({ chatId }) => 
         this.chatService.getChat(chatId).pipe(
           map(chat => {
@@ -80,8 +81,8 @@ export class ChatEffects {
       ofType(ChatActions.sendMessageWithAI),
       //tap(({ chatId, message }) => console.log('Effect: sendMessageWithAI triggered for chat', chatId, 'message:', message)),
       tap(action => console.log('Effect: sendMessageWithAI triggered', action)),
-      switchMap(({ chatId, message }) => 
-        this.chatService.sendMessageWithAI(chatId, message).pipe(
+      switchMap(({ chatId, message, model }) => 
+        this.chatService.sendMessageWithAI(chatId, message, model).pipe(
           map(response => {
             console.log('Effect: sendMessageWithAI success', response);
             return ChatActions.sendMessageWithAISuccess({
@@ -106,6 +107,21 @@ export class ChatEffects {
     );
   });
 
+  // Streaming effect
+  sendMessageWithAIStream$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ChatActions.sendMessageWithAIStream),
+      tap(action => console.log('Effect: sendMessageWithAIStream triggered', action)),
+      switchMap(({ chatId, message, model }) => 
+        this.chatService.sendMessageWithAIStream(chatId, message, model).pipe(
+          map((chunk) => ChatActions.receiveAIStreamToken({ chatId, token: chunk })),
+          endWith(ChatActions.completeAIStream({ chatId })),
+          catchError(error => of(ChatActions.failAIStream({ error: error.message || 'Stream error' })))
+        )
+      )
+    );
+  });
+
   sendMessageWithAISuccess$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ChatActions.sendMessageWithAISuccess),
@@ -119,4 +135,32 @@ export class ChatEffects {
       tap(() => console.log('Effect: sendMessageWithAIFailure triggered'))
     );
   }, { dispatch: false });
+
+  // After streaming completes, refresh the chat from backend to ensure
+  // final message formatting matches non-stream JSON output
+  refreshChatAfterStream$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ChatActions.completeAIStream),
+      tap(({ chatId }) => console.log('Effect: completeAIStream -> refresh chat', chatId)),
+      switchMap(({ chatId }) =>
+        this.chatService.getChat(chatId).pipe(
+          map(chat => ChatActions.loadChatSuccess({ chat })),
+          catchError(error => of(ChatActions.loadChatFailure({ error: error.message || 'Failed to refresh chat' })))
+        )
+      )
+    );
+  });
+
+  deleteChat$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ChatActions.deleteChat),
+      tap(({ chatId }) => console.log('Effect: deleteChat triggered for', chatId)),
+      switchMap(({ chatId }) =>
+        this.chatService.deleteChat(chatId).pipe(
+          map(() => ChatActions.deleteChatSuccess({ chatId })),
+          catchError(error => of(ChatActions.deleteChatFailure({ error: error.message || 'Failed to delete chat' })))
+        )
+      )
+    );
+  });
 } 

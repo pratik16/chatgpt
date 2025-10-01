@@ -40,6 +40,26 @@
       </button>
     </form>
     
+    <div class="divider">
+      <span>or</span>
+    </div>
+
+    <div id="g_id_onload"
+         [attr.data-client_id]="googleClientId || null"
+         data-context="signin"
+         data-ux_mode="popup"
+         data-auto_prompt="false"
+         data-callback="handleCredentialResponse">
+    </div>
+    <div class="g_id_signin"
+         data-type="standard"
+         data-shape="rectangular"
+         data-theme="outline"
+         data-text="signin_with"
+         data-size="large"
+         data-logo_alignment="left">
+    </div>
+
     <div class="demo-credentials">
       <p><strong>Demo Credentials:</strong></p>
       <p>Username: <code>pratik</code></p>

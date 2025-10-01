@@ -44,6 +44,14 @@ export class SidebarComponent implements OnInit {
     this.store.dispatch(ChatActions.loadChat({ chatId }));
   }
 
+  deleteChat(chatId: string, event?: MouseEvent) {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    this.store.dispatch(ChatActions.deleteChat({ chatId }));
+  }
+
   logout() {
     this.authService.logout();
   }

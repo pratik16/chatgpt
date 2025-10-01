@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { ChatMessageComponent } from '../chat-message/chat-message.component';
 import { selectCurrentChatMessages, selectCurrentChat, selectLoading } from '../../store/chat.selectors';
 import { Message } from '../../store/chat.actions';
@@ -35,17 +36,17 @@ export class ChatAreaComponent implements OnInit {
     this.store.dispatch(ChatActions.loadChatHistory());
   }
 
-  sendMessage(content: string) {
-    console.log('=== sendMessage called with:', content);
+  sendMessage(content: string, model?: string) {
+    console.log('=== sendMessage called with:', content, 'model:', model);
     console.log('Current user:', this.authService.getCurrentUser());
     console.log('Is authenticated:', this.authService.isAuthenticated());
     
-    this.currentChat$.subscribe(chat => {
+    this.currentChat$.pipe(take(1)).subscribe(chat => {
       console.log('Current chat from store:', chat);
       
       if (chat && chat.id) {
-        console.log('✅ Dispatching sendMessageWithAI for chat:', chat.id);
-        this.store.dispatch(ChatActions.sendMessageWithAI({ chatId: chat.id, message: content }));
+        console.log('✅ Dispatching sendMessageWithAIStream for chat:', chat.id, 'model:', model);
+        this.store.dispatch(ChatActions.sendMessageWithAIStream({ chatId: chat.id, message: content, model }));
       } else {
         console.log('❌ No current chat, creating new one first');
         // If no current chat, create one first
@@ -53,7 +54,7 @@ export class ChatAreaComponent implements OnInit {
         // Note: In a real app, you might want to wait for chat creation before sending message
         // For now, we'll just create the chat and the user can send the message again
       }
-    }).unsubscribe();
+    });
   }
 
   logout() {

@@ -18,6 +18,7 @@ export class LoginComponent {
   };
   error = '';
   loading = false;
+  googleClientId: string | null = null;
 
   constructor(
     private authService: AuthService,
@@ -35,6 +36,47 @@ export class LoginComponent {
       error: (error) => {
         this.error = error.error?.detail || 'Login failed';
         this.loading = false;
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    this.authService.fetchAuthConfig().subscribe({
+      next: (config) => {
+        this.googleClientId = config.googleClientId || null;
+        if (this.googleClientId) {
+          // Initialize Google One Tap callback
+          (window as any).handleCredentialResponse = (response: any) => {
+            const idToken = response.credential;
+            if (!idToken) return;
+            this.loading = true;
+            this.error = '';
+            this.authService.loginWithGoogleIdToken(idToken).subscribe({
+              next: () => {
+                this.router.navigate(['/chat']);
+              },
+              error: (err) => {
+                this.error = err.error?.detail || 'Google login failed';
+                this.loading = false;
+              }
+            });
+          };
+
+          // Configure GSI if script loaded
+          const google = (window as any).google;
+          if (google?.accounts?.id) {
+            google.accounts.id.initialize({
+              client_id: this.googleClientId,
+              callback: (window as any).handleCredentialResponse,
+              use_fedcm_for_prompt: false,
+              cancel_on_tap_outside: false,
+            });
+            google.accounts.id.renderButton(
+              document.querySelector('.g_id_signin'),
+              { theme: 'outline', size: 'large' }
+            );
+          }
+        }
       }
     });
   }

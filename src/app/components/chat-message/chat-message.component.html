@@ -2,14 +2,11 @@
   <div class="message-content">
     <div class="message-text">
       <div class="message-header">
-        <span class="sender-name">{{ isUser ? 'You' : 'ChatGPT' }}</span>
+        <span class="sender-name">{{ isUser ? 'You' : 'Server' }}</span>
         <span class="timestamp">{{ timestamp }}</span>
       </div>
       <div class="message-body">
-        <ng-container *ngFor="let seg of segments">
-          <div *ngIf="seg.type === 'text'" class="text-segment" [innerHTML]="renderInline(seg.content)"></div>
-          <pre *ngIf="seg.type === 'code'" class="code-block"><code [attr.data-lang]="seg.lang">{{ seg.content }}</code></pre>
-        </ng-container>
+        <div class="text-segment" [innerHTML]="renderedHtml"></div>
       </div>
     </div>
   </div>

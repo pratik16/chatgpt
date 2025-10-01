@@ -9,6 +9,14 @@
         (input)="onInput($event)"
         (keydown)="onKeyDown($event)">
       </textarea>
+      <div class="model-select">
+        <select [(ngModel)]="selectedModel">
+          <option [ngValue]="'auto'">Auto</option>
+          <optgroup *ngFor="let group of modelGroups" [label]="group.provider">
+            <option *ngFor="let opt of group.options" [ngValue]="opt.value">{{ opt.label }}</option>
+          </optgroup>
+        </select>
+      </div>
       <button class="send-button" [disabled]="!message.trim()" (click)="sendMessage()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

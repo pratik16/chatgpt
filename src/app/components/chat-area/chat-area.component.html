@@ -1,7 +1,7 @@
 <div class="chat-area-container">
   <div class="chat-header" *ngIf="(messages$ | async) && (messages$ | async)!.length > 0">
     <div class="header-content">
-      <h2 class="chat-title">ChatGPT by Pratik Vanol</h2>
+      <h2 class="chat-title">Potato AI Chat</h2>
       <button class="header-logout-btn" (click)="logout()" title="Logout">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -15,7 +15,7 @@
   
   <div class="welcome-section" *ngIf="(messages$ | async)?.length === 0">
     <div class="welcome-content">
-      <h1 class="welcome-title">ChatGPT by Pratik Vanol &nbsp;(<span class="model-badge">GPT-4</span>)</h1>
+      <h1 class="welcome-title">Potato AI Chat</h1>
     </div>
   </div>
   

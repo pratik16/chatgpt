@@ -9,6 +9,7 @@
   margin: 0;
   padding: 0;
   gap: 0;
+  box-sizing: border-box;
 }
 
 .user-message .message-content {
@@ -60,10 +61,17 @@
 .message-text {
   position: relative;
   max-width: 75%;
+  min-width: 0;
   padding: 8px 12px;
   border-radius: 12px;
   color: #111;
   background-color: #ffffff;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  box-sizing: border-box;
+  flex-shrink: 1;
 }
 
 .assistant-message .message-text {
@@ -135,9 +143,42 @@
 
 .message-body {
   color: inherit;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.6;
-  white-space: pre-wrap;
+  /* Allow Markdown block elements (lists, headings) to render properly */
+  white-space: normal;
+  margin-left: 20px;
+  margin-top: 10px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  max-width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+  
+  /* Ensure all text elements wrap properly */
+  p, div, span, h1, h2, h3, h4, h5, h6 {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  ul, ol {
+    margin-left: 20px;
+    padding-left: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  li {
+    margin-bottom: 4px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
 
   .code-block {
     background-color: #f5f5f5;
@@ -146,12 +187,18 @@
     margin: 8px 0;
     overflow-x: auto;
     border: 1px solid #e0e0e0;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
 
     code {
       color: #111;
       font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
       font-size: 13px;
       line-height: 1.4;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      white-space: pre-wrap;
     }
   }
 
@@ -162,12 +209,43 @@
     border-radius: 4px;
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
     font-size: 13px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 }
 
-/* Remove old row backgrounds */
-.user-message {
+/* Text segment specific styling for better word wrapping */
+.text-segment {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  max-width: 100%;
+  box-sizing: border-box;
+  
+  /* Ensure all child elements also wrap properly */
+  * {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Specific handling for pre and code blocks */
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+  
+  code {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
 }
 
-.assistant-message {
-}
+/* Remove old row backgrounds - keeping for future use */

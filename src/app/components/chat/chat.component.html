@@ -2,6 +2,6 @@
   <app-sidebar class="sidebar"></app-sidebar>
   <div class="main-content">
     <app-chat-area class="chat-area" #chatArea></app-chat-area>
-    <app-message-input class="message-input" (messageSent)="chatArea.sendMessage($event)"></app-message-input>
+    <app-message-input class="message-input" (messageSent)="chatArea.sendMessage($event.message, $event.model)"></app-message-input>
   </div>
 </div> 
