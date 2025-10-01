@@ -64,10 +64,7 @@ export class ChatService {
       // Use fetch to initiate POST, then switch to ReadableStream for chunked text
       const controller = new AbortController();
       const signal = controller.signal;
-      // Abort quickly if server doesn't respond (client-side guard)
-      const abortTimeout = setTimeout(() => {
-        try { controller.abort(); } catch {}
-      }, 100);
+      // No client-side abort timer; let the server control streaming lifecycle
 
       fetch(url, {
         method: 'POST',
@@ -201,7 +198,6 @@ export class ChatService {
 
       return () => {
         try { controller.abort(); } catch {}
-        clearTimeout(abortTimeout);
       };
     });
   }

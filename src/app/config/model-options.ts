@@ -14,18 +14,18 @@ export const MODEL_GROUPS: ModelGroup[] = [
   {
     provider: 'GPT',
     options: [
-      { label: 'gpt-4.1-nano', value: 'gpt-4.1-nano' },
-      { label: 'gpt-5-nano', value: 'gpt-5-nano' },
-      { label: 'gpt-5-mini', value: 'gpt-5-mini' },
-      { label: 'gpt-5', value: 'gpt-5' }
+      { label: 'gpt-4.1-nano', value: 'GPT:gpt-4.1-nano' },
+      { label: 'gpt-5-nano', value: 'GPT:gpt-5-nano' },
+      { label: 'gpt-5-mini', value: 'GPT:gpt-5-mini' },
+      { label: 'gpt-5', value: 'GPT:gpt-5' }
     ]
   },
   {
     provider: 'Antropic',
     options: [
-      { label: 'Claude Sonnet 3.7', value: 'Claude Sonnet 3.7' },
-      { label: 'Claude Sonnet 4', value: 'Claude Sonnet 4' },
-      { label: 'Claude Sonnet 4.5', value: 'Claude Sonnet 4.5' }
+      { label: 'Claude Sonnet 3.5', value: 'CLAUDE:claude-3-5-sonnet-20241022' },
+      { label: 'Claude Sonnet 4', value: 'CLAUDE:claude-sonnet-4-20250514' },
+      { label: 'Claude Sonnet 4.5', value: 'CLAUDE:claude-sonnet-4-5-20250929' }
     ]
   }
 ];
