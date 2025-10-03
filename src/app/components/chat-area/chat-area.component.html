@@ -20,12 +20,21 @@
   </div>
   
   <div class="messages-container">
-    <div *ngIf="loading$ | async" class="loading">Loading...</div>
+
+
+    <app-error-notification 
+      *ngIf="error$ | async as error"
+      [message]="error"
+      type="error"
+      (closed)="clearError()">
+    </app-error-notification>
+
     <app-chat-message 
       *ngFor="let message of messages$ | async"
       [isUser]="message.role === 'user'" 
       [message]="message.content"
-      [timestamp]="'Now'">
+      [timestamp]="'Now'"
+      [loading]="message.loading || false">
     </app-chat-message>
   </div>
 </div>

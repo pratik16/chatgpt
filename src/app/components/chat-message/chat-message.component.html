@@ -6,7 +6,11 @@
         <span class="timestamp">{{ timestamp }}</span>
       </div>
       <div class="message-body">
-        <div class="text-segment" [innerHTML]="renderedHtml"></div>
+        <div *ngIf="loading && !isUser" class="loading-indicator">
+          <div class="loading-spinner"></div>
+          <span>Thinking...</span>
+        </div>
+        <div class="text-segment" [innerHTML]="renderedHtml" *ngIf="!loading || isUser"></div>
       </div>
     </div>
   </div>

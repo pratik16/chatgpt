@@ -4,7 +4,8 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { ChatMessageComponent } from '../chat-message/chat-message.component';
-import { selectCurrentChatMessages, selectCurrentChat, selectLoading } from '../../store/chat.selectors';
+import { ErrorNotificationComponent } from '../error-notification/error-notification.component';
+import { selectCurrentChatMessages, selectCurrentChat, selectLoading, selectError } from '../../store/chat.selectors';
 import { Message } from '../../store/chat.actions';
 import * as ChatActions from '../../store/chat.actions';
 import { AuthService } from '../../services/auth.service';
@@ -12,7 +13,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-chat-area',
   standalone: true,
-  imports: [CommonModule, ChatMessageComponent],
+  imports: [CommonModule, ChatMessageComponent, ErrorNotificationComponent],
   templateUrl: './chat-area.component.html',
   styleUrl: './chat-area.component.scss'
 })
@@ -20,6 +21,7 @@ export class ChatAreaComponent implements OnInit {
   messages$: Observable<Message[]>;
   currentChat$: Observable<any>;
   loading$: Observable<boolean>;
+  error$: Observable<string | null>;
 
   constructor(
     private store: Store,
@@ -28,6 +30,7 @@ export class ChatAreaComponent implements OnInit {
     this.messages$ = this.store.select(selectCurrentChatMessages);
     this.currentChat$ = this.store.select(selectCurrentChat);
     this.loading$ = this.store.select(selectLoading);
+    this.error$ = this.store.select(selectError);
   }
 
   ngOnInit() {
@@ -59,5 +62,9 @@ export class ChatAreaComponent implements OnInit {
 
   logout() {
     this.authService.logout();
+  }
+
+  clearError() {
+    this.store.dispatch(ChatActions.clearChatError());
   }
 }

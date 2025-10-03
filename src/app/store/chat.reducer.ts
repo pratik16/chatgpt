@@ -129,7 +129,7 @@ export const chatReducer = createReducer(
   // Streaming: start
   on(ChatActions.sendMessageWithAIStream, (state, { chatId, message }) => {
     const userMsg: Message = { role: 'user', content: message };
-    const assistantPlaceholder: Message = { role: 'assistant', content: '' };
+    const assistantPlaceholder: Message = { role: 'assistant', content: '', loading: true };
 
     const updatedChats: Chat[] = state.chats.map((chat: Chat) => 
       chat.id === chatId 
@@ -157,7 +157,7 @@ export const chatReducer = createReducer(
       const lastIndex = messages.length - 1;
       const last = messages[lastIndex];
       if (last.role !== 'assistant') return messages;
-      const updatedLast: Message = { ...last, content: (last.content || '') + token };
+      const updatedLast: Message = { ...last, content: (last.content || '') + token, loading: false };
       return [...messages.slice(0, lastIndex), updatedLast];
     };
 
@@ -185,11 +185,34 @@ export const chatReducer = createReducer(
   })),
 
   // Streaming: fail
-  on(ChatActions.failAIStream, (state, { error }) => ({
-    ...state,
-    error,
-    loading: false
-  })),
+  on(ChatActions.failAIStream, (state, { error }) => {
+    const removeLoadingMessage = (messages: Message[]) => {
+      if (messages.length === 0) return messages;
+      const lastIndex = messages.length - 1;
+      const last = messages[lastIndex];
+      if (last.role === 'assistant' && last.loading) {
+        return messages.slice(0, lastIndex);
+      }
+      return messages;
+    };
+
+    const updatedChats = state.chats.map(chat => ({ 
+      ...chat, 
+      messages: removeLoadingMessage(chat.messages) 
+    }));
+
+    const updatedCurrentChat = state.currentChat 
+      ? { ...state.currentChat, messages: removeLoadingMessage(state.currentChat.messages) }
+      : state.currentChat;
+
+    return {
+      ...state,
+      chats: updatedChats,
+      currentChat: updatedCurrentChat,
+      error,
+      loading: false
+    };
+  }),
 
   // Set Loading
   on(ChatActions.setLoading, (state, { loading }) => ({
@@ -217,5 +240,11 @@ export const chatReducer = createReducer(
     ...state,
     error,
     loading: false
+  })),
+
+  // Clear Error
+  on(ChatActions.clearChatError, (state) => ({
+    ...state,
+    error: null
   }))
 ); 

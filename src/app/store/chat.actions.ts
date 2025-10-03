@@ -10,6 +10,7 @@ export interface Chat {
 export interface Message {
   role: 'user' | 'assistant';
   content: string;
+  loading?: boolean;
 }
 
 // Load Chat History
@@ -111,3 +112,6 @@ export const deleteChatFailure = createAction(
   '[Chat] Delete Chat Failure',
   props<{ error: string }>()
 );
+
+// Clear Error
+export const clearChatError = createAction('[Chat] Clear Chat Error');

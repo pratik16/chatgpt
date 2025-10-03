@@ -83,6 +83,11 @@
   padding: 6px 4px; /* Slight padding similar to WhatsApp */
   width: 100%;
   box-sizing: border-box;
+
+  app-error-notification {
+    margin: 8px 12px;
+    display: block;
+  }
 }
 
 .loading {

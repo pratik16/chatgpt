@@ -16,6 +16,7 @@ export class ChatMessageComponent implements AfterViewInit, OnChanges {
   @Input() isUser: boolean = false;
   @Input() message: string = '';
   @Input() timestamp: string = '';
+  @Input() loading: boolean = false;
   renderedHtml?: SafeHtml;
 
   constructor(

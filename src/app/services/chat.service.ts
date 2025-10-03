@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, catchError } from 'rxjs';
 import { Chat } from '../store/chat.actions';
 
 export interface ChatResponse {
@@ -21,7 +21,7 @@ export interface ChatResponse {
   providedIn: 'root'
 })
 export class ChatService {
-  private apiUrl = 'http://localhost:8000/api';
+  private apiUrl = 'http://chat.ai-potato-local/api';
 
   constructor(private http: HttpClient) { }
 
@@ -50,7 +50,31 @@ export class ChatService {
     if (model && model !== 'auto') {
       body.model = model;
     }
-    return this.http.post<ChatResponse>(`${this.apiUrl}/chat/${chatId}/send`, body);
+    return this.http.post<ChatResponse>(`${this.apiUrl}/chat/${chatId}/send`, body).pipe(
+      catchError(error => {
+        // Handle error parsing for 400 status codes
+        // Example error structure: { detail: { message: "Input too long for current configuration", max_tokens: 1, used_tokens: 38 } }
+        if (error.status === 400 && error.error) {
+          let errorMessage = 'Unknown error occurred';
+          
+          // Try to extract message from error structure
+          if (typeof error.error === 'object') {
+            if (error.error.detail?.message) {
+              errorMessage = error.error.detail.message;
+            } else if (error.error.detail?.error) {
+              errorMessage = error.error.detail.error;
+            } else if (error.error.error) {
+              errorMessage = error.error.error;
+            }
+          } else if (typeof error.error === 'string') {
+            errorMessage = error.error;
+          }
+          
+          throw new Error(errorMessage);
+        }
+        throw error;
+      })
+    );
   }
 
   // Streaming via EventSource (SSE). Backend must support text/event-stream
@@ -78,8 +102,39 @@ export class ChatService {
       })
       .then(async (response) => {
         if (!response.ok || !response.body) {
-          const text = await response.text().catch(() => '');
-          throw new Error(text || `HTTP ${response.status}`);
+          let errorMessage = `HTTP ${response.status}`;
+          
+          // For 400 errors, try to parse JSON error details
+          if (response.status === 400) {
+            try {
+              const errorText = await response.text();
+              const errorJson = JSON.parse(errorText);
+              
+              if (errorJson.detail && typeof errorJson.detail === 'object') {
+                if (errorJson.detail.message) {
+                  errorMessage = errorJson.detail.message;
+                } else if (errorJson.detail.error) {
+                  errorMessage = errorJson.detail.error;
+                }
+              } else if (errorJson.error) {
+                errorMessage = errorJson.error;
+              } else if (typeof errorJson === 'string') {
+                errorMessage = errorJson;
+              }
+            } catch (parseError) {
+              // Fall back to the response text if JSON parsing fails
+              try {
+                const errorText = await response.text();
+                errorMessage = errorText || `HTTP ${response.status}`;
+              } catch {
+                errorMessage = `HTTP ${response.status}`;
+              }
+            }
+          } else {
+            errorMessage = await response.text().catch(() => `HTTP ${response.status}`);
+          }
+          
+          throw new Error(errorMessage);
         }
         const contentType = (response.headers.get('content-type') || '').toLowerCase();
 
