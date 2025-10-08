@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError } from 'rxjs';
 import { Chat } from '../store/chat.actions';
+import { environment } from '../config/environment';
 
 export interface ChatResponse {
   user_message: {
@@ -21,7 +22,7 @@ export interface ChatResponse {
   providedIn: 'root'
 })
 export class ChatService {
-  private apiUrl = 'http://chat.ai-potato-local/api';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 
