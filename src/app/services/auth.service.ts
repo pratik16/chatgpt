@@ -19,6 +19,37 @@ export interface LoginResponse {
   access_token: string;
   token_type: string;
   user: User;
+  emailVerified?: boolean;
+}
+
+export interface RegisterRequest {
+  username: string;
+  email: string;
+  password: string;
+}
+
+export interface RegisterResponse {
+  id: string;
+  username: string;
+  email: string;
+}
+
+export interface VerifyRequest {
+  key: string;
+}
+
+export interface VerifyResponse {
+  access_token: string;
+  token_type: string;
+  user: User;
+  emailVerified: boolean;
+}
+
+export interface EmailNotVerifiedError {
+  detail: {
+    message: string;
+    email_verified: boolean;
+  };
 }
 
 export interface AuthConfigResponse {
@@ -140,6 +171,23 @@ export class AuthService {
     }
   }
 
+  register(credentials: RegisterRequest): Observable<RegisterResponse> {
+    return this.http.post<RegisterResponse>(`${this.apiUrl}/auth/users/register`, credentials);
+  }
+
+  verifyEmail(verificationKey: string): Observable<VerifyResponse> {
+    return this.http.post<VerifyResponse>(`${this.apiUrl}/auth/users/verify`, { key: verificationKey })
+      .pipe(
+        tap(response => {
+          localStorage.setItem('access_token', response.access_token);
+          try {
+            localStorage.setItem('user', JSON.stringify(response.user));
+          } catch {}
+          this.currentUserSubject.next(response.user);
+        })
+      );
+  }
+
   loginWithGoogleIdToken(idToken: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/auth/google`, { id_token: idToken })
       .pipe(
@@ -151,5 +199,9 @@ export class AuthService {
           this.currentUserSubject.next(response.user);
         })
       );
+  }
+
+  resendVerificationEmail(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/users/resend-verification`, { email });
   }
 } 

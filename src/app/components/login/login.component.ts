@@ -30,14 +30,32 @@ export class LoginComponent {
     this.error = '';
 
     this.authService.login(this.credentials).subscribe({
-      next: () => {
-        this.router.navigate(['/chat']);
+      next: (response) => {
+        if (response.emailVerified === false) {
+          // Redirect to email verification page
+          this.router.navigate(['/verify-email'], { 
+            queryParams: { email: this.credentials.username } 
+          });
+        } else {
+          this.router.navigate(['/chat']);
+        }
       },
       error: (error) => {
-        this.error = error.error?.detail || 'Login failed';
+        if (error.error?.detail?.email_verified === false) {
+          // Email not verified error
+          this.router.navigate(['/verify-email'], { 
+            queryParams: { email: this.credentials.username } 
+          });
+        } else {
+          this.error = error.error?.detail?.message || error.error?.detail || 'Login failed';
+        }
         this.loading = false;
       }
     });
+  }
+
+  goToRegister(): void {
+    this.router.navigate(['/register']);
   }
 
   ngOnInit(): void {

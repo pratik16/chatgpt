@@ -1,0 +1,48 @@
+<div class="verify-container">
+  <div class="verify-card">
+    <div class="verify-header">
+      <h1>Verify Your Email</h1>
+      <p *ngIf="email">Please enter the verification key sent to <strong>{{ email }}</strong></p>
+      <p *ngIf="!email">Please enter the verification key from your email</p>
+    </div>
+    
+    <div *ngIf="success" class="success-message">
+      <h3>Email Verified Successfully!</h3>
+      <p>Your account has been activated. Redirecting to chat...</p>
+    </div>
+
+    <form *ngIf="!success" (ngSubmit)="onSubmit()" class="verify-form">
+      <div class="form-group">
+        <label for="verificationKey">Verification Key</label>
+        <input
+          type="text"
+          id="verificationKey"
+          name="verificationKey"
+          [(ngModel)]="verificationKey"
+          required
+          placeholder="Enter verification key from email"
+        >
+      </div>
+      
+      <div *ngIf="error" class="error-message">
+        {{ error }}
+      </div>
+      
+      <button type="submit" [disabled]="loading" class="verify-button">
+        <span *ngIf="loading">Verifying...</span>
+        <span *ngIf="!loading">Verify Email</span>
+      </button>
+    </form>
+    
+    <div *ngIf="!success" class="help-links">
+      <p>Didn't receive the email? <a (click)="resendEmail()" [class.disabled]="resendLoading">
+        <span *ngIf="resendLoading">Sending...</span>
+        <span *ngIf="!resendLoading">Resend verification email</span>
+      </a></p>
+      <p *ngIf="resendMessage" [class]="resendMessage.includes('successfully') ? 'success-message' : 'error-message'">
+        {{ resendMessage }}
+      </p>
+      <p>Already verified? <a (click)="goToLogin()">Sign in here</a></p>
+    </div>
+  </div>
+</div>
