@@ -1,7 +1,9 @@
 .message-input-container {
-  padding: 8px 6px;
-  background-color: #e5ddd5; /* WhatsApp chat bg */
-  border-top: 1px solid #d1c4b8;
+  padding: 12px 10px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.8));
+  border-top: 1px solid var(--border);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
 }
 
 .input-wrapper {
@@ -14,15 +16,12 @@
   display: flex;
   align-items: center;
   background-color: #ffffff;
-  border: 1px solid #d1d7db;
-  border-radius: 24px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
   padding: 8px 10px 8px 14px;
   transition: border-color 0.2s, box-shadow 0.2s;
 
-  &:focus-within {
-    border-color: #00a884;
-    box-shadow: 0 0 0 2px rgba(0,168,132,0.15);
-  }
+  &:focus-within { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
 }
 
 .message-textarea {
@@ -30,7 +29,7 @@
   background: transparent;
   border: none;
   outline: none;
-  color: #111b21;
+  color: var(--fg);
   font-size: 16px;
   line-height: 1.5;
   resize: none;
@@ -38,9 +37,7 @@
   max-height: 200px;
   font-family: inherit;
 
-  &::placeholder {
-    color: #667781;
-  }
+  &::placeholder { color: var(--muted-fg); }
 }
 
 .send-button {
@@ -49,33 +46,21 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  background-color: #00a884;
-  border: none;
-  border-radius: 50%;
+  background-color: var(--accent);
+  border: 1px solid transparent;
+  border-radius: 10px;
   color: white;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
+  transition: box-shadow 0.2s, transform 0.1s, background-color 0.2s;
   margin-left: 8px;
   flex-shrink: 0;
 
-  &:hover:not(:disabled) {
-    background-color: #029e7a;
-  }
+  &:hover:not(:disabled) { box-shadow: 0 8px 20px rgba(10,132,255,0.25); }
+  &:active:not(:disabled) { transform: scale(0.98); background: var(--accent-press); }
 
-  &:active:not(:disabled) {
-    transform: scale(0.98);
-  }
+  &:disabled { background-color: #e9e9ec; color: #b6b6bb; cursor: not-allowed; }
 
-  &:disabled {
-    background-color: #d1d7db;
-    color: #aebac1;
-    cursor: not-allowed;
-  }
-
-  svg {
-    width: 16px;
-    height: 16px;
-  }
+  svg { width: 16px; height: 16px; }
 }
 
 .model-select {
@@ -84,24 +69,18 @@
 
   select {
     appearance: none;
-    background: #f0f2f5;
-    border: 1px solid #d1d7db;
-    color: #111b21;
+    background: #fff;
+    border: 1px solid var(--border);
+    color: var(--fg);
     font-size: 14px;
     padding: 6px 10px;
-    border-radius: 16px;
+    border-radius: 10px;
     outline: none;
     cursor: pointer;
     transition: border-color 0.2s, box-shadow 0.2s;
 
-    &:hover {
-      border-color: #c7cdd1;
-    }
-
-    &:focus {
-      border-color: #00a884;
-      box-shadow: 0 0 0 2px rgba(0,168,132,0.15);
-    }
+    &:hover { border-color: #c6c6cc; }
+    &:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
   }
 }
 
@@ -111,7 +90,7 @@
 }
 
 .disclaimer {
-  color: #667781;
+  color: var(--muted-fg);
   font-size: 12px;
   line-height: 1.4;
 }

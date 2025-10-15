@@ -2,13 +2,15 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: #e5ddd5; /* WhatsApp chat background */
+  background: var(--bg);
 }
 
 .chat-header {
   padding: 16px 24px;
-  border-bottom: 1px solid #4a4b53;
-  background-color: #075e54; /* WhatsApp dark green header */
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.7));
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
 }
 
 .header-content {
@@ -19,8 +21,8 @@
 
 .chat-title {
   font-size: 18px;
-  font-weight: 600;
-  color: #ffffff;
+  font-weight: 700;
+  color: var(--fg);
   margin: 0;
 }
 
@@ -28,24 +30,18 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px;
-  background-color: transparent;
-  border: 1px solid rgba(255,255,255,0.5);
-  border-radius: 6px;
-  color: #ffffff;
+  padding: 8px 12px;
+  background-color: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--fg);
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s;
 
-  &:hover {
-    background-color: rgba(255,255,255,0.1);
-    border-color: #ffffff;
-  }
+  &:hover { background-color: #fff; }
 
-  svg {
-    width: 16px;
-    height: 16px;
-  }
+  svg { width: 16px; height: 16px; }
 }
 
 .welcome-section {
@@ -63,8 +59,9 @@
 
 .welcome-title {
   font-size: 32px;
-  font-weight: 600;
-  color: #1f2c34;
+  font-weight: 700;
+  color: var(--fg);
+  letter-spacing: -0.02em;
   margin-bottom: 16px;
 }
 
@@ -80,19 +77,16 @@
   flex: 9;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 6px 4px; /* Slight padding similar to WhatsApp */
+  padding: 12px 8px;
   width: 100%;
   box-sizing: border-box;
 
-  app-error-notification {
-    margin: 8px 12px;
-    display: block;
-  }
+  app-error-notification { margin: 8px 12px; display: block; }
 }
 
 .loading {
   text-align: center;
   padding: 2rem;
-  color: #8e8ea0;
+  color: var(--muted-fg);
   font-size: 0.875rem;
 }

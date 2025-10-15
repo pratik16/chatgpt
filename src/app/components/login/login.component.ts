@@ -19,6 +19,7 @@ export class LoginComponent {
   error = '';
   loading = false;
   googleClientId: string | null = null;
+  gsiReady = false;
 
   constructor(
     private authService: AuthService,
@@ -79,23 +80,41 @@ export class LoginComponent {
               }
             });
           };
-
-          // Configure GSI if script loaded
-          const google = (window as any).google;
-          if (google?.accounts?.id) {
-            google.accounts.id.initialize({
-              client_id: this.googleClientId,
-              callback: (window as any).handleCredentialResponse,
-              use_fedcm_for_prompt: false,
-              cancel_on_tap_outside: false,
-            });
-            google.accounts.id.renderButton(
-              document.querySelector('.g_id_signin'),
-              { theme: 'outline', size: 'large' }
-            );
-          }
+          this.waitForGsiAndInit();
         }
       }
     });
+  }
+
+  private waitForGsiAndInit(attempt: number = 0): void {
+    const google = (window as any).google;
+    if (google?.accounts?.id && this.googleClientId) {
+      this.gsiReady = true;
+      google.accounts.id.initialize({
+        client_id: this.googleClientId,
+        callback: (window as any).handleCredentialResponse,
+        use_fedcm_for_prompt: false,
+        cancel_on_tap_outside: false,
+      });
+      this.tryRenderGoogleButton();
+      return;
+    }
+
+    if (attempt > 50) {
+      return;
+    }
+    setTimeout(() => this.waitForGsiAndInit(attempt + 1), 200);
+  }
+
+  private tryRenderGoogleButton(attempt: number = 0): void {
+    const google = (window as any).google;
+    const buttonContainer = document.querySelector('.g_id_signin') as HTMLElement | null;
+    if (buttonContainer && google?.accounts?.id) {
+      buttonContainer.innerHTML = '';
+      google.accounts.id.renderButton(buttonContainer, { theme: 'outline', size: 'large' });
+      return;
+    }
+    if (attempt > 20) return;
+    setTimeout(() => this.tryRenderGoogleButton(attempt + 1), 100);
   }
 } 

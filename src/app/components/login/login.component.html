@@ -1,10 +1,10 @@
 <div class="login-container">
-  <div class="login-card">
+  <div class="login-card glass-surface">
     <div class="login-header">
-      <h1>ChatGPT Login</h1>
-      <p>Welcome back! Please sign in to your account.</p>
+      <h1>Welcome</h1>
+      <p>Sign in to continue your conversation</p>
     </div>
-    
+
     <form (ngSubmit)="onSubmit()" class="login-form">
       <div class="form-group">
         <label for="username">Username</label>
@@ -13,11 +13,12 @@
           id="username"
           name="username"
           [(ngModel)]="credentials.username"
+          class="input"
           required
-          placeholder="Enter your username"
+          placeholder="Username"
         >
       </div>
-      
+
       <div class="form-group">
         <label for="password">Password</label>
         <input
@@ -25,33 +26,26 @@
           id="password"
           name="password"
           [(ngModel)]="credentials.password"
+          class="input"
           required
-          placeholder="Enter your password"
+          placeholder="Password"
         >
       </div>
-      
+
       <div *ngIf="error" class="error-message">
         {{ error }}
       </div>
-      
-      <button type="submit" [disabled]="loading" class="login-button">
-        <span *ngIf="loading">Signing in...</span>
+
+      <button type="submit" [disabled]="loading" class="btn-primary login-button">
+        <span *ngIf="loading">Signing in…</span>
         <span *ngIf="!loading">Sign In</span>
       </button>
     </form>
-    
-    <div class="divider">
-      <span>or</span>
-    </div>
 
-    <div id="g_id_onload"
-         [attr.data-client_id]="googleClientId || null"
-         data-context="signin"
-         data-ux_mode="popup"
-         data-auto_prompt="false"
-         data-callback="handleCredentialResponse">
-    </div>
+    <div class="divider"><span>or</span></div>
+
     <div class="g_id_signin"
+         *ngIf="googleClientId"
          data-type="standard"
          data-shape="rectangular"
          data-theme="outline"
@@ -61,13 +55,8 @@
     </div>
 
     <div class="register-link">
-      <p>Don't have an account? <a (click)="goToRegister()">Create one here</a></p>
+      <p>Don't have an account? <a (click)="goToRegister()">Create one</a></p>
     </div>
 
-    <div class="demo-credentials">
-      <p><strong>Demo Credentials:</strong></p>
-      <p>Username: <code>pratik</code></p>
-      <p>Password: <code>demodemo</code></p>
-    </div>
   </div>
-</div> 
+</div>

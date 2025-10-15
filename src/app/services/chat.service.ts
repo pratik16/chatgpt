@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError } from 'rxjs';
+import { Observable, catchError, map, switchMap, of } from 'rxjs';
 import { Chat } from '../store/chat.actions';
 import { environment } from '../config/environment';
+import { CryptoService, EncryptedPayload } from './crypto.service';
 
 export interface ChatResponse {
   user_message: {
@@ -24,18 +25,68 @@ export interface ChatResponse {
 export class ChatService {
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private crypto: CryptoService) { }
+
+  private isEnc(x: any): x is EncryptedPayload {
+    return this.crypto.isEncryptedPayload(x);
+  }
+
+  private async decryptChatTitle(chat: Chat): Promise<Chat> {
+    try {
+      const maybeEnc: any = (chat as any).title;
+      if (this.isEnc(maybeEnc)) {
+        const title = await this.crypto.decryptToString(maybeEnc);
+        return { ...chat, title };
+      }
+      return chat;
+    } catch {
+      return chat;
+    }
+  }
+
+  private decryptChats(chats: Chat[]): Promise<Chat[]> {
+    return Promise.all(chats.map(c => this.decryptChatTitle(c)));
+  }
+
+  deriveTitleFromText(text: string, maxLen: number = 48): string {
+    const singleLine = (text || '').replace(/\s+/g, ' ').trim();
+    if (singleLine.length === 0) return 'New Chat';
+    return singleLine.length > maxLen ? singleLine.slice(0, maxLen).trim() : singleLine;
+  }
+
+  updateChatTitle(chatId: string, plainTitle: string): Observable<void> {
+    const safeTitle = this.deriveTitleFromText(plainTitle);
+    return of(null).pipe(
+      switchMap(() => this.crypto.encryptString(safeTitle)),
+      switchMap(enc => this.http.patch<void>(`${this.apiUrl}/chat/${chatId}/title`, { title: safeTitle, title_enc: enc })),
+      catchError(() => of(void 0))
+    );
+  }
 
   getChatHistory(): Observable<Chat[]> {
-    return this.http.get<Chat[]>(`${this.apiUrl}/chat-history`);
+    return this.http.get<Chat[]>(`${this.apiUrl}/chat-history`).pipe(
+      switchMap(chats => of(this.decryptChats(chats)).pipe(switchMap(p => p))),
+      catchError(err => { throw err; })
+    );
   }
 
   getChat(chatId: string): Observable<Chat> {
-    return this.http.get<Chat>(`${this.apiUrl}/chat/${chatId}`);
+    return this.http.get<Chat>(`${this.apiUrl}/chat/${chatId}`).pipe(
+      switchMap(chat => of(this.decryptChatTitle(chat)).pipe(switchMap(p => p))),
+      catchError(err => { throw err; })
+    );
   }
 
   createChat(): Observable<Chat> {
-    return this.http.post<Chat>(`${this.apiUrl}/chat`, {});
+    const defaultTitle = 'New Chat';
+    return of(null).pipe(
+      switchMap(() => this.crypto.encryptString(defaultTitle)),
+      switchMap(enc => this.http.post<Chat>(`${this.apiUrl}/chat`, { title: defaultTitle, title_enc: enc })),
+      switchMap(chat => of(this.decryptChatTitle(chat)).pipe(switchMap(p => p))),
+      catchError(err => this.http.post<Chat>(`${this.apiUrl}/chat`, {}).pipe(
+        switchMap(chat => of(this.decryptChatTitle(chat)).pipe(switchMap(p => p)))
+      ))
+    );
   }
 
   addMessage(chatId: string, role: string, content: string): Observable<any> {

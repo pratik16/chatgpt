@@ -1,14 +1,14 @@
 <div class="register-container">
-  <div class="register-card">
+  <div class="register-card glass-surface">
     <div class="register-header">
-      <h1>Create Account</h1>
-      <p>Join ChatGPT and start chatting with AI</p>
+      <h1>Create your account</h1>
+      <p>Join and start your first conversation</p>
     </div>
     
     <div *ngIf="success" class="success-message">
       <h3>Registration Successful!</h3>
       <p>Please check your email and click the verification link to activate your account.</p>
-      <button (click)="goToLogin()" class="login-button">Go to Login</button>
+      <button (click)="goToLogin()" class="btn-primary login-button">Go to Login</button>
     </div>
 
     <form *ngIf="!success" [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
@@ -18,7 +18,8 @@
           type="text"
           id="firstname"
           formControlName="firstname"
-          placeholder="Enter your first name"
+          class="input"
+          placeholder="First name"
           [class.error]="registerForm.get('firstname')?.invalid && registerForm.get('firstname')?.touched"
         >
         <div *ngIf="getFieldError('firstname')" class="field-error">
@@ -32,7 +33,8 @@
           type="text"
           id="lastname"
           formControlName="lastname"
-          placeholder="Enter your last name"
+          class="input"
+          placeholder="Last name"
           [class.error]="registerForm.get('lastname')?.invalid && registerForm.get('lastname')?.touched"
         >
         <div *ngIf="getFieldError('lastname')" class="field-error">
@@ -46,7 +48,8 @@
           type="text"
           id="username"
           formControlName="username"
-          placeholder="Enter your username"
+          class="input"
+          placeholder="Username"
           [class.error]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
         >
         <div *ngIf="getFieldError('username')" class="field-error">
@@ -60,7 +63,8 @@
           type="email"
           id="email"
           formControlName="email"
-          placeholder="Enter your email"
+          class="input"
+          placeholder="Email"
           [class.error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
         >
         <div *ngIf="getFieldError('email')" class="field-error">
@@ -74,7 +78,8 @@
           type="password"
           id="password"
           formControlName="password"
-          placeholder="Enter your password"
+          class="input"
+          placeholder="Password"
           [class.error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
         >
         <div *ngIf="getFieldError('password')" class="field-error">
@@ -88,7 +93,8 @@
           type="password"
           id="confirmPassword"
           formControlName="confirmPassword"
-          placeholder="Confirm your password"
+          class="input"
+          placeholder="Confirm password"
           [class.error]="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched"
         >
         <div *ngIf="getFieldError('confirmPassword')" class="field-error">
@@ -100,14 +106,14 @@
         {{ error }}
       </div>
       
-      <button type="submit" [disabled]="loading || registerForm.invalid" class="register-button">
+      <button type="submit" [disabled]="loading || registerForm.invalid" class="btn-primary register-button">
         <span *ngIf="loading">Creating Account...</span>
         <span *ngIf="!loading">Create Account</span>
       </button>
     </form>
     
     <div *ngIf="!success" class="login-link">
-      <p>Already have an account? <a (click)="goToLogin()">Sign in here</a></p>
+      <p>Already have an account? <a (click)="goToLogin()">Sign in</a></p>
     </div>
   </div>
 </div>
