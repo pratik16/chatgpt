@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { Actions, ofType } from '@ngrx/effects';
 import { ChatMessageComponent } from '../chat-message/chat-message.component';
 import { ErrorNotificationComponent } from '../error-notification/error-notification.component';
 import { selectCurrentChatMessages, selectCurrentChat, selectLoading, selectError } from '../../store/chat.selectors';
@@ -25,7 +26,8 @@ export class ChatAreaComponent implements OnInit {
 
   constructor(
     private store: Store,
-    private authService: AuthService
+    private authService: AuthService,
+    private actions$: Actions
   ) {
     this.messages$ = this.store.select(selectCurrentChatMessages);
     this.currentChat$ = this.store.select(selectCurrentChat);
@@ -56,6 +58,18 @@ export class ChatAreaComponent implements OnInit {
         this.store.dispatch(ChatActions.createChat());
         // Note: In a real app, you might want to wait for chat creation before sending message
         // For now, we'll just create the chat and the user can send the message again
+        // Wait for the chat creation to succeed, then send the message
+        this.actions$.pipe(
+          ofType(ChatActions.createChatSuccess),
+          take(1)
+        ).subscribe(({ chat: newChat }) => {
+          console.log('✅ Chat created successfully, now sending message:', newChat.id);
+          this.store.dispatch(ChatActions.sendMessageWithAIStream({ 
+            chatId: newChat.id, 
+            message: content, 
+            model 
+          }));
+        });
       }
     });
   }
