@@ -37,7 +37,7 @@
       <div class="login-form-group">
         <div class="flex justify-between items-center">
           <label for="password" class="text-sm font-medium text-foreground">Password</label>
-          <a href="#" class="login-link text-xs">Forgot password?</a>
+          <a [routerLink]="['/forgot-password']" class="login-link text-xs">Forgot password?</a>
         </div>
         <div class="relative">
           <svg class="absolute left-3 top-3 h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,6 +70,26 @@
         <span *ngIf="!loading">Sign In</span>
       </button>
     </form>
+
+    <div class="divider">
+      <span>or</span>
+    </div>
+
+    <div id="g_id_onload"
+         [attr.data-client_id]="googleClientId || null"
+         data-context="signin"
+         data-ux_mode="popup"
+         data-auto_prompt="false"
+         data-callback="handleCredentialResponse">
+    </div>
+    <div class="g_id_signin"
+         data-type="standard"
+         data-shape="rectangular"
+         data-theme="outline"
+         data-text="signin_with"
+         data-size="large"
+         data-logo_alignment="left">
+    </div>
 
     <div class="login-footer">
       Don't have an account? 

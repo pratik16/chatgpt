@@ -8,6 +8,7 @@ export interface User {
   id: string;
   username: string;
   email: string;
+  picture?: string | null;
 }
 
 export interface LoginRequest {
@@ -23,14 +24,15 @@ export interface LoginResponse {
 }
 
 export interface RegisterRequest {
-  username: string;
   email: string;
   password: string;
+  username?: string;
+  fullName?: string;
 }
 
 export interface RegisterResponse {
   id: string;
-  username: string;
+  username?: string | null;
   email: string;
 }
 
@@ -54,6 +56,16 @@ export interface EmailNotVerifiedError {
 
 export interface AuthConfigResponse {
   googleClientId: string;
+}
+
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ResetPasswordRequest {
+  token: string;
+  password: string;
+  confirmPassword: string;
 }
 
 @Injectable({
@@ -203,5 +215,15 @@ export class AuthService {
 
   resendVerificationEmail(email: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/auth/users/resend-verification`, { email });
+  }
+
+  requestPasswordReset(email: string): Observable<void> {
+    const body: ForgotPasswordRequest = { email };
+    return this.http.post<void>(`${this.apiUrl}/auth/forgot-password`, body);
+  }
+
+  resetPassword(token: string, password: string, confirmPassword: string): Observable<any> {
+    const body: ResetPasswordRequest = { token, password, confirmPassword };
+    return this.http.post(`${this.apiUrl}/auth/reset-password`, body);
   }
 } 

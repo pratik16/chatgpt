@@ -24,12 +24,11 @@ export class RegisterComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.registerForm = this.fb.group({
-      firstname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30), this.nameValidator]],
-      lastname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30), this.nameValidator]],
-      username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30), this.alphanumericValidator]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
-      confirmPassword: ['', [Validators.required]]
+      confirmPassword: ['', [Validators.required]],
+      username: ['', [Validators.minLength(3), Validators.maxLength(30), this.alphanumericValidator]],
+      fullname: ['', [Validators.minLength(2), Validators.maxLength(60)]]
     }, { validators: this.passwordMatchValidator });
   }
 
@@ -82,15 +81,23 @@ export class RegisterComponent implements OnInit {
     this.loading = true;
     this.error = '';
 
-    const { confirmPassword, ...registerData } = this.registerForm.value;
+    const { confirmPassword, ...raw } = this.registerForm.value;
+    const payload: any = {
+      email: raw.email,
+      password: raw.password,
+    };
+    if (raw.username) payload.username = raw.username;
+    if (raw.fullname) payload.fullName = raw.fullname; // API expects fullName
 
-    this.authService.register(registerData).subscribe({
+    this.authService.register(payload).subscribe({
       next: () => {
         this.success = true;
         this.loading = false;
       },
       error: (error) => {
-        this.error = error.error?.detail || 'Registration failed';
+        const backend = error?.error;
+        const msg = backend?.message ?? backend?.detail?.message ?? backend?.detail ?? error?.message;
+        this.error = typeof msg === 'string' ? msg : 'Registration failed';
         this.loading = false;
       }
     });
@@ -114,9 +121,6 @@ export class RegisterComponent implements OnInit {
       }
       if (field.errors['alphanumeric']) {
         return 'Username must contain only letters and numbers (no spaces or special characters)';
-      }
-      if (field.errors['nameOnly']) {
-        return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} must contain only letters (no numbers or special characters)`;
       }
       if (field.errors['minlength']) {
         const requiredLength = field.errors['minlength'].requiredLength;

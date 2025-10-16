@@ -69,11 +69,23 @@
   <!-- User Profile Section -->
   <div class="border-t border-sidebar-border p-3">
     <div *ngIf="!isCollapsed" class="flex items-center gap-3">
-      <div class="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-        </svg>
-      </div>
+      <ng-container *ngIf="(currentUser$ | async) as user">
+        <ng-container *ngIf="user?.picture; else defaultAvatar">
+          <img
+            [src]="user.picture"
+            alt="Profile picture"
+            class="h-8 w-8 rounded-full object-cover border border-sidebar-border"
+            referrerpolicy="no-referrer"
+          />
+        </ng-container>
+        <ng-template #defaultAvatar>
+          <div class="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+          </div>
+        </ng-template>
+      </ng-container>
       <div class="flex-1 min-w-0">
         <p class="text-sm font-medium truncate">{{ (currentUser$ | async)?.username || 'User' }}</p>
         <p class="text-xs text-muted-foreground">{{ (currentUser$ | async)?.email || 'user@example.com' }}</p>
@@ -89,11 +101,23 @@
     </div>
     
     <div *ngIf="isCollapsed" class="flex flex-col items-center gap-2">
-      <div class="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-        </svg>
-      </div>
+      <ng-container *ngIf="(currentUser$ | async) as user">
+        <ng-container *ngIf="user?.picture; else defaultAvatarCollapsed">
+          <img
+            [src]="user.picture"
+            alt="Profile picture"
+            class="h-8 w-8 rounded-full object-cover border border-sidebar-border"
+            referrerpolicy="no-referrer"
+          />
+        </ng-container>
+        <ng-template #defaultAvatarCollapsed>
+          <div class="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+          </div>
+        </ng-template>
+      </ng-container>
       <button
         type="button"
         (click)="logout()"

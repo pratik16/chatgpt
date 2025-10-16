@@ -13,51 +13,6 @@
 
     <form *ngIf="!success" [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
       <div class="form-group">
-        <label for="firstname">First Name</label>
-        <input
-          type="text"
-          id="firstname"
-          formControlName="firstname"
-          class="w-full box-border bg-input border border-border rounded-lg text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-          placeholder="First name"
-          [class.error]="registerForm.get('firstname')?.invalid && registerForm.get('firstname')?.touched"
-        >
-        <div *ngIf="getFieldError('firstname')" class="field-error">
-          {{ getFieldError('firstname') }}
-        </div>
-      </div>
-      
-      <div class="form-group">
-        <label for="lastname">Last Name</label>
-        <input
-          type="text"
-          id="lastname"
-          formControlName="lastname"
-          class="w-full box-border bg-input border border-border rounded-lg text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-          placeholder="Last name"
-          [class.error]="registerForm.get('lastname')?.invalid && registerForm.get('lastname')?.touched"
-        >
-        <div *ngIf="getFieldError('lastname')" class="field-error">
-          {{ getFieldError('lastname') }}
-        </div>
-      </div>
-      
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input
-          type="text"
-          id="username"
-          formControlName="username"
-          class="w-full box-border bg-input border border-border rounded-lg text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-          placeholder="Username"
-          [class.error]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
-        >
-        <div *ngIf="getFieldError('username')" class="field-error">
-          {{ getFieldError('username') }}
-        </div>
-      </div>
-      
-      <div class="form-group">
         <label for="email">Email</label>
         <input
           type="email"
@@ -71,7 +26,7 @@
           {{ getFieldError('email') }}
         </div>
       </div>
-      
+
       <div class="form-group">
         <label for="password">Password</label>
         <input
@@ -86,7 +41,7 @@
           {{ getFieldError('password') }}
         </div>
       </div>
-      
+
       <div class="form-group">
         <label for="confirmPassword">Confirm Password</label>
         <input
@@ -99,6 +54,36 @@
         >
         <div *ngIf="getFieldError('confirmPassword')" class="field-error">
           {{ getFieldError('confirmPassword') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="username">Username (optional)</label>
+        <input
+          type="text"
+          id="username"
+          formControlName="username"
+          class="w-full box-border bg-input border border-border rounded-lg text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          placeholder="Username"
+          [class.error]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
+        >
+        <div *ngIf="getFieldError('username')" class="field-error">
+          {{ getFieldError('username') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="fullname">Full name (optional)</label>
+        <input
+          type="text"
+          id="fullname"
+          formControlName="fullname"
+          class="w-full box-border bg-input border border-border rounded-lg text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          placeholder="Full name"
+          [class.error]="registerForm.get('fullname')?.invalid && registerForm.get('fullname')?.touched"
+        >
+        <div *ngIf="getFieldError('fullname')" class="field-error">
+          {{ getFieldError('fullname') }}
         </div>
       </div>
       

@@ -1,11 +1,12 @@
 {
-  "name": "chatgpt",
-  "version": "0.0.0",
+  "name": "PotatoAI Chat",
+  "version": "0.0.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
+    "release": "scp -i ~/.ssh/potato.pem -r dist/chatgpt/* ubuntu@13.126.82.69:/var/www/potato-frontend/",
     "test": "ng test"
   },
   "private": true,
