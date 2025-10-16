@@ -18,6 +18,8 @@ export class SidebarComponent implements OnInit {
   @Input() isCollapsed = false;
   @Input() width = 280;
   @Output() toggleCollapse = new EventEmitter<void>();
+  @Output() chatSelected = new EventEmitter<void>();
+  @Output() newChatClicked = new EventEmitter<void>();
 
   chats$: Observable<Chat[]>;
   loading$: Observable<boolean>;
@@ -43,11 +45,13 @@ export class SidebarComponent implements OnInit {
 
   createNewChat() {
     this.store.dispatch(ChatActions.createChat());
+    this.newChatClicked.emit();
   }
 
   selectChat(chatId: string) {
     this.activeChatId = chatId;
     this.store.dispatch(ChatActions.loadChat({ chatId }));
+    this.chatSelected.emit();
   }
 
   deleteChat(chatId: string, event?: MouseEvent) {

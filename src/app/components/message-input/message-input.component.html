@@ -1,7 +1,7 @@
-<div class="border-t border-border bg-card p-4 shadow-lg">
+<div class="border-t border-border bg-card p-4 shadow-lg relative z-40 md:z-auto">
   <form (ngSubmit)="sendMessage()" class="w-full">
-    <div class="relative flex flex-col sm:flex-row items-stretch sm:items-end gap-2 w-full">
-      <div class="relative w-full sm:flex-1 sm:min-w-0">
+    <div class="relative flex items-end gap-2 w-full">
+      <div class="relative w-full flex-1 min-w-0">
         <textarea
           #messageInput
           [(ngModel)]="message"
@@ -13,7 +13,7 @@
           name="message">
         </textarea>
         
-        <div class="absolute right-2 top-1/2 -translate-y-1/2 w-[20%] max-w-[20%] min-w-0">
+        <div class="absolute right-2 top-1/2 -translate-y-1/2 w-[36%] sm:w-[20%] max-w-[50%] min-w-[120px]">
           <select [(ngModel)]="selectedModel" name="model" class="bg-input border border-border focus-visible:ring-primary transition-all rounded-lg px-3 py-2 text-sm w-full">
             <option [ngValue]="'auto'">Auto</option>
             <optgroup *ngFor="let group of modelGroups" [label]="group.provider">
@@ -26,7 +26,7 @@
       <button
         type="submit"
         [disabled]="!message.trim()"
-        class="h-10 w-10 flex-shrink-0 btn bg-primary text-primary-foreground rounded-lg flex items-center justify-center  disabled:opacity-50">
+        class="h-10 w-10 flex-shrink-0 btn bg-primary text-primary-foreground rounded-lg flex items-center justify-center disabled:opacity-50">
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
         </svg>

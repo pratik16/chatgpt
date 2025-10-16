@@ -14,6 +14,7 @@ import { environment } from '../../config/environment';
     <button
       type="button"
       (click)="toggleTheme()"
+      title="Change theme"
       class="fixed top-4 right-4 z-50 h-9 w-9 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground flex items-center justify-center transition-colors">
       <svg class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
@@ -28,6 +29,7 @@ import { environment } from '../../config/environment';
     <button
       type="button"
       (click)="openHelp()"
+      title="Need Help?"
       class="fixed top-4 right-16 z-50 h-9 w-9 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground flex items-center justify-center transition-colors"
       *ngIf="isLoggedIn">
       <svg class="h-[1.2rem] w-[1.2rem]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -41,7 +43,7 @@ import { environment } from '../../config/environment';
       <div class="absolute inset-0 bg-black/50" (click)="closeHelp()"></div>
       <div class="relative bg-card text-card-foreground rounded-lg shadow-xl w-full max-w-md mx-4 p-4">
         <div class="flex items-center justify-between mb-3">
-          <h3 class="text-base font-semibold">Need help?</h3>
+          <h3 class="text-base font-semibold" title="Need Help?">Need help?</h3>
           <button type="button" (click)="closeHelp()" class="h-8 w-8 rounded-md hover:bg-accent flex items-center justify-center">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
           </button>

@@ -1,14 +1,16 @@
 <div class="flex h-screen w-full bg-background overflow-hidden">
   <app-theme-toggle></app-theme-toggle>
-  
-  <!-- Sidebar -->
-  <div class="relative flex-shrink-0">
+
+  <!-- Sidebar (hidden on small screens when history overlay closed) -->
+  <div class="relative flex-shrink-0 hidden md:block">
     <app-sidebar
       [isCollapsed]="isCollapsed"
       (toggleCollapse)="onToggleCollapse()"
+      (chatSelected)="isMobileHistoryOpen = false"
+      (newChatClicked)="isMobileHistoryOpen = false"
       [width]="sidebarWidth">
     </app-sidebar>
-    
+
     <!-- Resize Handle -->
     <div
       *ngIf="!isCollapsed"
@@ -16,6 +18,16 @@
       (mousedown)="onMouseDown()">
       <div class="absolute inset-y-0 -right-1 w-3 group-hover:bg-primary/20"></div>
     </div>
+  </div>
+
+  <!-- Mobile History Overlay -->
+  <div *ngIf="isMobileHistoryOpen" class="fixed inset-0 z-40 md:hidden bg-background">
+    <app-sidebar
+      [isCollapsed]="false"
+      [width]="320"
+      (chatSelected)="isMobileHistoryOpen = false"
+      (newChatClicked)="isMobileHistoryOpen = false">
+    </app-sidebar>
   </div>
 
   <!-- Main Chat Area -->
@@ -29,5 +41,34 @@
 
     <!-- Input Area -->
     <app-message-input (messageSent)="chatArea.sendMessage($event.message, $event.model)"></app-message-input>
+    <!-- Spacer so send button isn't hidden behind mobile bottom nav -->
+    <div class="h-16 md:hidden"></div>
   </div>
-</div> 
+
+  <!-- Bottom Navigation (mobile) -->
+  <div class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-sidebar border-t border-sidebar-border">
+    <div class="grid grid-cols-3">
+      <button type="button" class="py-3 px-4 flex flex-col items-center gap-1 text-sidebar-foreground hover:bg-sidebar-accent/40"
+        (click)="isMobileHistoryOpen = true">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+        </svg>
+        <span class="text-xs">History</span>
+      </button>
+      <button type="button" class="py-3 px-4 flex flex-col items-center gap-1 text-sidebar-foreground hover:bg-sidebar-accent/40"
+        (click)="createNewChatMobile()">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        <span class="text-xs">New</span>
+      </button>
+      <button type="button" class="py-3 px-4 flex flex-col items-center gap-1 text-sidebar-foreground hover:bg-sidebar-accent/40"
+        (click)="logoutMobile()">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+        </svg>
+        <span class="text-xs">Logout</span>
+      </button>
+    </div>
+  </div>
+</div>
