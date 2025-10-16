@@ -1,5 +1,5 @@
-<div class="register-container">
-  <div class="register-card glass-surface">
+<div class="auth-container">
+  <div class="auth-card">
     <div class="register-header">
       <h1>Create your account</h1>
       <p>Join and start your first conversation</p>
@@ -8,7 +8,7 @@
     <div *ngIf="success" class="success-message">
       <h3>Registration Successful!</h3>
       <p>Please check your email and click the verification link to activate your account.</p>
-      <button (click)="goToLogin()" class="btn-primary login-button">Go to Login</button>
+      <button (click)="goToLogin()" class="btn btn-primary login-button">Go to Login</button>
     </div>
 
     <form *ngIf="!success" [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
@@ -18,7 +18,7 @@
           type="text"
           id="firstname"
           formControlName="firstname"
-          class="input"
+          class="w-full box-border bg-input border border-border rounded-lg text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           placeholder="First name"
           [class.error]="registerForm.get('firstname')?.invalid && registerForm.get('firstname')?.touched"
         >
@@ -33,7 +33,7 @@
           type="text"
           id="lastname"
           formControlName="lastname"
-          class="input"
+          class="w-full box-border bg-input border border-border rounded-lg text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           placeholder="Last name"
           [class.error]="registerForm.get('lastname')?.invalid && registerForm.get('lastname')?.touched"
         >
@@ -48,7 +48,7 @@
           type="text"
           id="username"
           formControlName="username"
-          class="input"
+          class="w-full box-border bg-input border border-border rounded-lg text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           placeholder="Username"
           [class.error]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
         >
@@ -63,7 +63,7 @@
           type="email"
           id="email"
           formControlName="email"
-          class="input"
+          class="w-full box-border bg-input border border-border rounded-lg text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           placeholder="Email"
           [class.error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
         >
@@ -78,7 +78,7 @@
           type="password"
           id="password"
           formControlName="password"
-          class="input"
+          class="w-full box-border bg-input border border-border rounded-lg text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           placeholder="Password"
           [class.error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
         >
@@ -93,7 +93,7 @@
           type="password"
           id="confirmPassword"
           formControlName="confirmPassword"
-          class="input"
+          class="w-full box-border bg-input border border-border rounded-lg text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           placeholder="Confirm password"
           [class.error]="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched"
         >
@@ -106,7 +106,7 @@
         {{ error }}
       </div>
       
-      <button type="submit" [disabled]="loading || registerForm.invalid" class="btn-primary register-button">
+      <button type="submit" [disabled]="loading || registerForm.invalid" class="btn btn-primary register-button">
         <span *ngIf="loading">Creating Account...</span>
         <span *ngIf="!loading">Create Account</span>
       </button>

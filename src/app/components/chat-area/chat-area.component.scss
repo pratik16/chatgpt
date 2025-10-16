@@ -8,7 +8,7 @@
 .chat-header {
   padding: 16px 24px;
   border-bottom: 1px solid var(--border);
-  background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.7));
+  background: hsl(var(--card));
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
 }
@@ -16,13 +16,13 @@
 .header-content {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .chat-title {
   font-size: 18px;
   font-weight: 700;
-  color: var(--fg);
+  color: hsl(var(--foreground));
   margin: 0;
 }
 
@@ -31,15 +31,15 @@
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  background-color: #fff;
-  border: 1px solid var(--border);
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
   border-radius: 10px;
-  color: var(--fg);
+  color: hsl(var(--foreground));
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s;
 
-  &:hover { background-color: #fff; }
+  &:hover { background-color: hsl(var(--card)); }
 
   svg { width: 16px; height: 16px; }
 }

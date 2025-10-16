@@ -1,30 +1,39 @@
-<div class="message-input-container">
-  <div class="input-wrapper">
-    <div class="input-area">
-      <textarea 
-        class="message-textarea" 
-        placeholder="Message ChatGPT..."
-        rows="1"
-        #messageInput
-        (input)="onInput($event)"
-        (keydown)="onKeyDown($event)">
-      </textarea>
-      <div class="model-select">
-        <select [(ngModel)]="selectedModel">
-          <option [ngValue]="'auto'">Auto</option>
-          <optgroup *ngFor="let group of modelGroups" [label]="group.provider">
-            <option *ngFor="let opt of group.options" [ngValue]="opt.value">{{ opt.label }}</option>
-          </optgroup>
-        </select>
+<div class="border-t border-border bg-card p-4 shadow-lg">
+  <form (ngSubmit)="sendMessage()" class="w-full">
+    <div class="relative flex flex-col sm:flex-row items-stretch sm:items-end gap-2 w-full">
+      <div class="relative w-full sm:flex-1 sm:min-w-0">
+        <textarea
+          #messageInput
+          [(ngModel)]="message"
+          (input)="onInput($event)"
+          (keydown)="onKeyDown($event)"
+          placeholder="Type your message... (Shift+Enter for new line)"
+          class="min-h-[60px] max-h-[200px] pr-[32%] bg-input border-border focus-visible:ring-primary transition-all w-full rounded-lg px-3 py-2 text-sm"
+          rows="1"
+          name="message">
+        </textarea>
+        
+        <div class="absolute right-2 top-1/2 -translate-y-1/2 w-[20%] max-w-[20%] min-w-0">
+          <select [(ngModel)]="selectedModel" name="model" class="bg-input border border-border focus-visible:ring-primary transition-all rounded-lg px-3 py-2 text-sm w-full">
+            <option [ngValue]="'auto'">Auto</option>
+            <optgroup *ngFor="let group of modelGroups" [label]="group.provider">
+              <option *ngFor="let opt of group.options" [ngValue]="opt.value">{{ opt.label }}</option>
+            </optgroup>
+          </select>
+        </div>
       </div>
-      <button class="send-button" [disabled]="!message.trim()" (click)="sendMessage()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      
+      <button
+        type="submit"
+        [disabled]="!message.trim()"
+        class="h-10 w-10 flex-shrink-0 btn bg-primary text-primary-foreground rounded-lg flex items-center justify-center  disabled:opacity-50">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
         </svg>
       </button>
     </div>
-    <div class="input-footer">
-      <span class="disclaimer">ChatGPT can make mistakes. Consider checking important information.</span>
-    </div>
-  </div>
+    <p class="text-xs text-muted-foreground mt-2 text-center">
+      Press Enter to send, Shift+Enter for new line
+    </p>
+  </form>
 </div>

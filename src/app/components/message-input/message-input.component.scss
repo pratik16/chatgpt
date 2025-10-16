@@ -69,18 +69,18 @@
 
   select {
     appearance: none;
-    background: #fff;
-    border: 1px solid var(--border);
-    color: var(--fg);
-    font-size: 14px;
-    padding: 6px 10px;
-    border-radius: 10px;
+    background: hsl(var(--input));
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--foreground));
+    font-size: 0.875rem; /* 14px */
+    padding: 0.5rem 0.75rem; /* 8px 12px */
+    border-radius: 0.5rem; /* 8px to align with textarea rounded-lg */
     outline: none;
     cursor: pointer;
     transition: border-color 0.2s, box-shadow 0.2s;
 
-    &:hover { border-color: #c6c6cc; }
-    &:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+    &:hover { border-color: hsl(var(--border)); }
+    &:focus { border-color: hsl(var(--primary)); box-shadow: var(--focus-glow); }
   }
 }
 

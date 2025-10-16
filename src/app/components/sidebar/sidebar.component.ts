@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -15,9 +15,14 @@ import { AuthService, User } from '../../services/auth.service';
   styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent implements OnInit {
+  @Input() isCollapsed = false;
+  @Input() width = 280;
+  @Output() toggleCollapse = new EventEmitter<void>();
+
   chats$: Observable<Chat[]>;
   loading$: Observable<boolean>;
   currentUser$: Observable<User | null>;
+  activeChatId: string | null = null;
 
   constructor(
     private store: Store,
@@ -41,6 +46,7 @@ export class SidebarComponent implements OnInit {
   }
 
   selectChat(chatId: string) {
+    this.activeChatId = chatId;
     this.store.dispatch(ChatActions.loadChat({ chatId }));
   }
 
@@ -54,5 +60,9 @@ export class SidebarComponent implements OnInit {
 
   logout() {
     this.authService.logout();
+  }
+
+  getChatPreview(chat: Chat): string {
+    return (chat as any).preview || 'No preview available';
   }
 } 

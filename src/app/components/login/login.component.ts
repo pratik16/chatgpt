@@ -3,21 +3,23 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ThemeToggleComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
   credentials = {
-    username: '',
+    email: '',
     password: ''
   };
   error = '';
   loading = false;
+  errors: Record<string, string> = {};
   googleClientId: string | null = null;
   gsiReady = false;
 
@@ -30,12 +32,18 @@ export class LoginComponent {
     this.loading = true;
     this.error = '';
 
-    this.authService.login(this.credentials).subscribe({
+    // Map email to username for the auth service
+    const loginRequest = {
+      username: this.credentials.email,
+      password: this.credentials.password
+    };
+
+    this.authService.login(loginRequest).subscribe({
       next: (response) => {
         if (response.emailVerified === false) {
           // Redirect to email verification page
           this.router.navigate(['/verify-email'], { 
-            queryParams: { email: this.credentials.username } 
+            queryParams: { email: this.credentials.email } 
           });
         } else {
           this.router.navigate(['/chat']);
@@ -45,7 +53,7 @@ export class LoginComponent {
         if (error.error?.detail?.email_verified === false) {
           // Email not verified error
           this.router.navigate(['/verify-email'], { 
-            queryParams: { email: this.credentials.username } 
+            queryParams: { email: this.credentials.email } 
           });
         } else {
           this.error = error.error?.detail?.message || error.error?.detail || 'Login failed';

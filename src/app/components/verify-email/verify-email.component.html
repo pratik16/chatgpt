@@ -1,5 +1,5 @@
-<div class="verify-container">
-  <div class="verify-card">
+<div class="auth-container">
+  <div class="auth-card">
     <div class="verify-header">
       <h1>Verify Your Email</h1>
       <p *ngIf="email">Please enter the verification key sent to <strong>{{ email }}</strong></p>
@@ -28,7 +28,7 @@
         {{ error }}
       </div>
       
-      <button type="submit" [disabled]="loading" class="verify-button">
+      <button type="submit" [disabled]="loading" class="btn btn-primary verify-button">
         <span *ngIf="loading">Verifying...</span>
         <span *ngIf="!loading">Verify Email</span>
       </button>

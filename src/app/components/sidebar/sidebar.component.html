@@ -1,56 +1,107 @@
-<div class="sidebar-container">
-  <div class="sidebar-header">
-    <button class="new-chat-btn" (click)="createNewChat()">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 4.5v15m7.5-7.5h-15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<div
+  class="relative h-full bg-sidebar border-r border-sidebar-border flex flex-col"
+  [style.width]="isCollapsed ? '60px' : width + 'px'"
+  [style.transition]="'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)'">
+  
+  <!-- Collapse Toggle Button -->
+  <button
+    type="button"
+    (click)="toggleCollapse.emit()"
+    class="absolute -right-3 top-4 z-10 h-6 w-6 rounded-full border border-sidebar-border bg-sidebar hover:bg-sidebar-accent shadow-md transition-all hover:shadow-lg flex items-center justify-center">
+    <svg *ngIf="isCollapsed" class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+    </svg>
+    <svg *ngIf="!isCollapsed" class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+    </svg>
+  </button>
+
+  <!-- New Chat Button -->
+  <div class="p-3 border-b border-sidebar-border">
+    <button
+      type="button"
+      (click)="createNewChat()"
+      class="w-full justify-start gap-2 btn btn-primary flex items-center px-3 py-2 font-medium rounded-lg">
+      <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
       </svg>
-      New chat
+      <span *ngIf="!isCollapsed">New Chat</span>
     </button>
   </div>
-  
-  <div class="sidebar-content">
-    <div class="chat-history">
-      <div *ngIf="loading$ | async" class="loading">Loading...</div>
-      <div 
-        *ngFor="let chat of chats$ | async" 
-        class="chat-item"
-        [class.active]="false"
-        (click)="selectChat(chat.id)"
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <span>{{ chat.title }}</span>
-        <button class="delete-btn" title="Delete chat" (click)="deleteChat(chat.id, $event)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <polyline points="3,6 5,6 21,6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+
+  <!-- Chat History -->
+  <div class="flex-1 px-2 overflow-y-auto">
+    <div class="space-y-1 py-2">
+      <div *ngIf="loading$ | async" class="text-center text-muted-foreground text-sm py-4">
+        Loading...
+      </div>
+      
+      <div *ngIf="!(loading$ | async)">
+        <button
+          *ngFor="let chat of chats$ | async"
+          type="button"
+          (click)="selectChat(chat.id)"
+          [class]="'w-full text-left px-3 py-2 rounded-lg transition-all ' + 
+                   (activeChatId === chat.id ? 
+                    'bg-sidebar-accent text-sidebar-accent-foreground shadow-sm' : 
+                    'hover:bg-sidebar-accent/50 text-sidebar-foreground')">
+          
+          <div *ngIf="!isCollapsed" class="flex items-start gap-2">
+            <svg class="h-4 w-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+            </svg>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium truncate">{{ chat.title }}</p>
+              <p class="text-xs text-muted-foreground truncate">{{ getChatPreview(chat) }}</p>
+            </div>
+          </div>
+          
+          <div *ngIf="isCollapsed" class="flex justify-center">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+            </svg>
+          </div>
         </button>
       </div>
     </div>
   </div>
-  
-  <div class="sidebar-footer">
-    <div class="user-section">
-      <div class="user-avatar">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- User Profile Section -->
+  <div class="border-t border-sidebar-border p-3">
+    <div *ngIf="!isCollapsed" class="flex items-center gap-3">
+      <div class="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
         </svg>
       </div>
-      <div class="user-info">
-        <span class="username">{{ (currentUser$ | async)?.username || 'User' }}</span>
-        <button class="logout-btn" (click)="logout()" title="Logout">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <polyline points="16,17 21,12 16,7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium truncate">{{ (currentUser$ | async)?.username || 'User' }}</p>
+        <p class="text-xs text-muted-foreground">{{ (currentUser$ | async)?.email || 'user@example.com' }}</p>
       </div>
+      <button
+        type="button"
+        (click)="logout()"
+        class="h-8 w-8 hover:bg-destructive/10 hover:text-destructive flex items-center justify-center rounded-lg transition-colors">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+        </svg>
+      </button>
+    </div>
+    
+    <div *ngIf="isCollapsed" class="flex flex-col items-center gap-2">
+      <div class="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+        </svg>
+      </div>
+      <button
+        type="button"
+        (click)="logout()"
+        class="h-8 w-8 hover:bg-destructive/10 hover:text-destructive flex items-center justify-center rounded-lg transition-colors">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+        </svg>
+      </button>
     </div>
   </div>
 </div> 
