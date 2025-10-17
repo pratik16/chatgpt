@@ -7,7 +7,7 @@
           [(ngModel)]="message"
           (input)="onInput($event)"
           (keydown)="onKeyDown($event)"
-          placeholder="Type your message... (Shift+Enter for new line)"
+          placeholder="Type your message"
           class="min-h-[60px] max-h-[200px] pr-[32%] bg-input border-border focus-visible:ring-primary transition-all w-full rounded-lg px-3 py-2 text-sm"
           rows="1"
           name="message">
@@ -26,7 +26,7 @@
       <button
         type="submit"
         [disabled]="!message.trim()"
-        class="h-10 w-10 flex-shrink-0 btn bg-primary text-primary-foreground rounded-lg flex items-center justify-center disabled:opacity-50">
+        class="h-16 w-10 flex-shrink-0 btn bg-primary text-primary-foreground rounded-lg flex items-center justify-center disabled:opacity-50">
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
         </svg>
